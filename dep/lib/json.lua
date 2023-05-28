@@ -1,5 +1,5 @@
 --- required by build/bundler/src/init.lua
-local json = require("39e00ecc-b109-46f7-af30-996439305da8.dep.lib.json.json")
+local json = require("674f6139-e895-4255-8cad-edd0a15a94b7.dep.lib.json.json")
 if false then
     json = {
         --- Turn a lua table into a JSON serialized string
