@@ -1,5 +1,5 @@
 --- required by build/bundler/src/init.lua
-local argparse = require("ff4eeb30-f958-4845-b806-b95dd8bd9a6a.dep.lib.argparse.src.argparse")
+local argparse = require("d20d9085-74da-4b25-996f-65115f0fafee.dep.lib.argparse.src.argparse")
 if false then
     ---@class ArgParse.Option
     ---@field args fun(self: ArgParse.Option, args: number): ArgParse.Option set the number of arguments per option. ie parser:option("double"):args(2) -> <program> --double arg1 arg2
