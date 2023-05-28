@@ -2,16 +2,17 @@ warn = function(...)
     print("WARN", ...)
 end
 ---@module 'bundler.path'
-local pathlib = require("f4564065-24e2-49de-921b-6867a247b8f4.src.path")
+local pathlib = require("85374dcb-f074-4f19-a493-12bd7d7c1966.src.path")
 ---@module 'bundler.Bundler'
-local Bundler = require("f4564065-24e2-49de-921b-6867a247b8f4.src.Bundler")
-local argparse = require("f4564065-24e2-49de-921b-6867a247b8f4.dep.lib.argparse")
-local json = require("f4564065-24e2-49de-921b-6867a247b8f4.dep.lib.json")
+local Bundler = require("85374dcb-f074-4f19-a493-12bd7d7c1966.src.Bundler")
+local argparse = require("85374dcb-f074-4f19-a493-12bd7d7c1966.dep.lib.argparse")
+local json = require("85374dcb-f074-4f19-a493-12bd7d7c1966.dep.lib.json")
 ---@class Bundler.Config
 ---@field out_dir string
 ---@field in_dir string
 ---@field exports {  in_file: string, out_file: string }[] the files to shim for public use
 ---@field strip { comments: boolean, annotations: boolean, empty: boolean } strip out comments, annotation comments, or empty lines
+---@field public_dir string|nil an optional directory for LICENSE, README, etc, to be copied to <config.out_dir>/ 
 local default_config = {
     out_dir = "./build",
     in_dir = "./src",
@@ -21,6 +22,7 @@ local default_config = {
         annotations = false,
         empty = false
     },
+    public_dir = nil
     -- treeshake = true
 }
 ---@param config_or_path Bundler.Config|string
@@ -71,6 +73,7 @@ local function fix_config(config)
     end
     return config
 end
+-- TODO FIXME remove path separators from end of outdir, publicdir, and indir if present
 local function main()
     local parser = argparse("bundler", "package lua files into a portable folder structure including dependencies")
     parser:option("-c --config --config-file", "Read from a .lua or .json configuration file")
@@ -80,6 +83,7 @@ local function main()
     parser:option("-e --export", "Export a given file"):count("*")
     parser:option("-m --map", "Remap a given file - <in> <out>"):count("*"):args(2)
     parser:option("-s --strip", "Remove one of the choices"):choices({ "comments", "annotations", "empty" }):count("*")
+    parser:option("-p --publicdir", "Set the directory to copy LICENSE, README, etc from to outdir")
     local args = parser:parse()
     ---@type Bundler.Config
     local config = setmetatable({ strip = {} }, { __index = default_config })
@@ -94,6 +98,10 @@ local function main()
     -- set indir if provided
     if args.indir then
         config.in_dir = args.indir
+    end
+    -- set publicdir if provided
+    if args.publicdir then
+        config.public_dir = args.publicdir
     end
     -- set main via args.export
     if args.main then
@@ -121,8 +129,8 @@ end
 main()
 -- TODO shim template test:
 --[[
-    require("f4564065-24e2-49de-921b-6867a247b8f4.src.shim_template")
-    local Bundler = require("f4564065-24e2-49de-921b-6867a247b8f4.src.Bundler")
+    require("85374dcb-f074-4f19-a493-12bd7d7c1966.src.shim_template")
+    local Bundler = require("85374dcb-f074-4f19-a493-12bd7d7c1966.src.Bundler")
     local Bundler2 = require("<UUID>.Bundler")
     assert(Bundler == Bundler2)
 ]]
