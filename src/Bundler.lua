@@ -1,5 +1,5 @@
-local class = require("50b73535-f135-4ae4-94d6-098208e4c739.dep.lib.30log")
-local fs = require("50b73535-f135-4ae4-94d6-098208e4c739.dep.src.util.fs.operations")
+local class = require("48ed01ad-2c27-4d6b-b18a-cd28ae30521c.dep.lib.30log")
+local fs = require("48ed01ad-2c27-4d6b-b18a-cd28ae30521c.dep.src.util.fs.operations")
 local folder_of_this_file = (...):match("(.-)[^%.]+$")
 ---@module "bundler.path"
 local pathlib = require(folder_of_this_file .. "path")
