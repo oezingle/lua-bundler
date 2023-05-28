@@ -2,11 +2,11 @@ warn = function(...)
     print("WARN", ...)
 end
 ---@module 'bundler.path'
-local pathlib = require("8839cb59-6257-4f46-981a-2aee0e5c4376.src.path")
+local pathlib = require("f9fb2e0b-2a2a-478a-b004-da5fab777142.src.path")
 ---@module 'bundler.Bundler'
-local Bundler = require("8839cb59-6257-4f46-981a-2aee0e5c4376.src.Bundler")
-local argparse = require("8839cb59-6257-4f46-981a-2aee0e5c4376.dep.lib.argparse")
-local json = require("8839cb59-6257-4f46-981a-2aee0e5c4376.dep.lib.json")
+local Bundler = require("f9fb2e0b-2a2a-478a-b004-da5fab777142.src.Bundler")
+local argparse = require("f9fb2e0b-2a2a-478a-b004-da5fab777142.dep.lib.argparse")
+local json = require("f9fb2e0b-2a2a-478a-b004-da5fab777142.dep.lib.json")
 ---@class Bundler.Config
 ---@field out_dir string
 ---@field in_dir string
@@ -129,8 +129,8 @@ end
 main()
 -- TODO shim template test:
 --[[
-    require("8839cb59-6257-4f46-981a-2aee0e5c4376.src.shim_template")
-    local Bundler = require("8839cb59-6257-4f46-981a-2aee0e5c4376.src.Bundler")
+    require("f9fb2e0b-2a2a-478a-b004-da5fab777142.src.shim_template")
+    local Bundler = require("f9fb2e0b-2a2a-478a-b004-da5fab777142.src.Bundler")
     local Bundler2 = require("<UUID>.Bundler")
     assert(Bundler == Bundler2)
 ]]
