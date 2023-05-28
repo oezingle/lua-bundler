@@ -2,10 +2,10 @@ if not ... then
     error("this file must be require()'d")
 end
 
-local folder_of_this_file = (...):match("(.-)%.[^%.]+$")
+local folder_of_this_file = (...):match("(.-)%.[^%.]+$") or ""
 
 local function add_this_library()
-    local uuid = "85374dcb%-f074%-4f19%-a493%-12bd7d7c1966"
+    local uuid = "53980035%-ba83%-4a15%-9706%-3bf25181f157"
 
     ---@param libraryname string
     table.insert(package.searchers, function(libraryname)
