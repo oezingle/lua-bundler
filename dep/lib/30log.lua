@@ -1,5 +1,5 @@
 --- required by build/bundler/src/Bundler.lua
-local class = require("f28ad920-cbc7-4d29-b568-ae59cecf0c40.dep.lib.30log.30log")
+local class = require("74536f69-9116-46f3-b6a2-b0bb02cd1d18.dep.lib.30log.30log")
 -- hehe
 if false then
     --[[
