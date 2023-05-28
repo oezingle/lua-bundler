@@ -5,7 +5,7 @@ end
 local folder_of_this_file = (...):match("(.-)%.[^%.]+$") or ""
 
 local function add_this_library()
-    local uuid = "e9a13ff9%-df51%-4c27%-958c%-d40f72b4f091"
+    local uuid = "f7d32bc4%-3921%-4480%-92cb%-e9efa29a9ff8"
 
     ---@param libraryname string
     table.insert(package.searchers, function(libraryname)
