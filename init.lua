@@ -11,4 +11,4 @@ end
 require(folder_of_this_file .. "_shim")
 
 -- TODO @path
-return require("5d7a8788-e6e3-4327-baa7-fa3ae384ca08.src.init")
+return require("740e7192-0ef7-4326-820e-45b9efb9f24c.src.init")
