@@ -1,0 +1,15 @@
+[submodule "lib/30log"]
+	path = lib/30log
+	url = https://github.com/Yonaba/30log
+[submodule "lib/argparse"]
+	path = lib/argparse
+	url = https://github.com/mpeterv/argparse
+[submodule "lib/log"]
+	path = lib/log
+	url = https://github.com/rxi/log.lua
+[submodule "lib/lua-parser"]
+	path = lib/lua-parser
+	url = https://github.com/thenumbernine/lua-parser.git
+[submodule "lib/lua-ext"]
+	path = lib/lua-ext
+	url = https://github.com/thenumbernine/lua-ext

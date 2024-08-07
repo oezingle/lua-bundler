@@ -1,0 +1,9 @@
+#!/bin/sh
+
+rm -r build
+
+lua src/init.lua src build --log-level=trace -l parser -l ext -l table
+
+lua build/init.lua src build2 -l parser -l ext -l table
+
+cd build2; lua init.lua --help
