@@ -1,32 +1,4 @@
 local function parser_shim()
-    --[[
-    local shims = {
-        package.loaded["ext.op"] = require("lib.lua-ext.op")
-        package.loaded["ext.table"] = require("lib.lua-ext.table")
-        package.loaded["ext.class"] = require("lib.lua-ext.class")
-        package.loaded["ext.string"] = require("lib.lua-ext.string")
-        package.loaded["ext.tolua"] = require("lib.lua-ext.tolua")
-        package.loaded["ext.assert"] = require("lib.lua-ext.assert")
-
-        package.loaded["parser.base.ast"] = require("lib.lua-parser.base.ast")
-        package.loaded["parser.lua.ast"] = require("lib.lua-parser.lua.ast")
-
-        package.loaded["parser.base.datareader"] = require("lib.lua-parser.base.datareader")
-
-        package.loaded["parser.base.tokenizer"] = require("lib.lua-parser.base.tokenizer")
-        package.loaded["parser.lua.tokenizer"] = require("lib.lua-parser.lua.tokenizer")
-
-        package.loaded["parser.base.parser"] = require("lib.lua-parser.base.parser")
-        package.loaded["parser.lua.parser"] = require("lib.lua-parser.lua.parser")
-    }
-
-    for _, shim in pairs(shims) do
-        local dest, src = table.unpack(shim)
-
-        package.loaded[dest] = require(src)
-    end
-    ]]
-
     package.loaded["ext.op"]                 = require("lib.lua-ext.op")
     package.loaded["ext.table"]              = require("lib.lua-ext.table")
     package.loaded["ext.class"]              = require("lib.lua-ext.class")

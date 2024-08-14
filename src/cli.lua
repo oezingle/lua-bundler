@@ -55,7 +55,8 @@ local function cli()
 
         uid = uid,
 
-        libraries = libraries
+        libraries = libraries,
+        public = public,
     })
 
     bundler:run()

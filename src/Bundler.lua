@@ -29,6 +29,7 @@ local check_functions = {
 ---@field dest string
 ---@field uid string
 ---@field libraries string[]?
+---@field ["public"] string?
 
 ---@param options LuaBundle.Bundler.Options
 function Bundler:init(options)
@@ -45,6 +46,8 @@ function Bundler:init(options)
     self.built = {}
 
     self.uid = options.uid
+
+    self.paths.public = options.public
 end
 
 ---@param replacers { UUID: string }
@@ -100,7 +103,7 @@ function Bundler:recurse_ast_list(ast, filepath)
 
     for _, statement in ipairs(ast) do
         local inner_needs_shim = self:recurse_ast(statement, filepath)
-        
+
         needs_shim = needs_shim or inner_needs_shim
     end
 
@@ -132,7 +135,7 @@ function Bundler:recurse_ast(statement, filepath)
                             if not self.built[require_path] then
                                 self:handle_dependency(require_path)
 
-                                self.built[require_path] = true 
+                                self.built[require_path] = true
                             end
                         end
                     end
@@ -256,10 +259,29 @@ function Bundler:handle_dependency(luapath)
     fs.write(path_out, contents)
 end
 
+function Bundler:publish_public()
+    local dir = self.paths.public
+
+    if not dir then
+        return
+    end
+
+    log.info(string.format("Copying public files from %q", dir))
+
+    for _, file in ipairs(fs.ls(dir)) do
+        local full_in = join(dir, file)
+        local full_out = join(self.paths.dest, file)
+
+        fs.cp(full_in, full_out)
+    end
+end
+
 function Bundler:run()
     self:find_modules("")
 
     self:add_shim()
+
+    self:publish_public()
 end
 
 return Bundler

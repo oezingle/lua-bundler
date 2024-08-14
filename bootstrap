@@ -1,9 +1,15 @@
 #!/bin/sh
 
-rm -r build
+rm -r build build2
 
-lua src/init.lua src build --log-level=trace -l parser -l ext -l table
+set -e
 
-lua build/init.lua src build2 -l parser -l ext -l table
+# Run original bundler
+lua src/init.lua src build --log-level=error -l parser -l ext -l table
+# Check that the bundled bundler can bundle
+lua build/init.lua src build2 --log-level=error -l parser -l ext -l table
 
-cd build2; lua init.lua --help
+# Check that the bundled bundler built by the bundled bundler runs within its own directory.
+cd build2; lua init.lua --help > /dev/null
+
+echo "ok"
