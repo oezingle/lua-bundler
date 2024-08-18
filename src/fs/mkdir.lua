@@ -1,20 +1,20 @@
 local has_lfs, lfs = pcall(require, "lfs")
 
-local is_windows = package.config:sub(1, 1) == "\\"
+local is_windows = require("src.fs.is_windows")
 
----@alias LuaX.CLI.Mkdir fun (path: string): nil
+---@alias fs.Mkdir fun (path: string): nil
 
----@type LuaX.CLI.Mkdir
+---@type fs.Mkdir
 local function mkdir_unix(path)
     os.execute(string.format("mkdir -p %q", path))
 end
 
----@type LuaX.CLI.Mkdir
+---@type fs.Mkdir
 local function mkdir_lfs(path)
     lfs.mkdir(path)
 end
 
----@type LuaX.CLI.Mkdir
+---@type fs.Mkdir
 local function mkdir_windows(path)
     os.execute(string.format("mkdir %q", path))
 end
@@ -36,6 +36,6 @@ return {
     mkdir_windows = mkdir_windows,
     mkdir_lfs = mkdir_lfs,
 
-    ---@type LuaX.CLI.Mkdir
+    ---@type fs.Mkdir
     mkdir = mkdir
 }

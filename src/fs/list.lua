@@ -1,11 +1,11 @@
 
 local has_lfs, lfs = pcall(require, "lfs")
 
-local is_windows = package.config:sub(1, 1) == "\\"
+local is_windows = require("src.fs.is_windows")
 
----@alias LuaX.CLI.LsDir fun (path: string): string[]
+---@alias fs.LsDir fun (path: string): string[]
 
----@type LuaX.CLI.LsDir
+---@type fs.LsDir
 local function ls_lfs(path)
     local children = {}
 
@@ -20,7 +20,7 @@ local function ls_lfs(path)
     return children
 end
 
----@type LuaX.CLI.LsDir
+---@type fs.LsDir
 local function ls_unix(path)
     local children = {}
 
@@ -38,7 +38,7 @@ local function ls_unix(path)
 end
 
 --- really this is dos too but dos will match windows
----@type LuaX.CLI.LsDir
+---@type fs.LsDir
 local function ls_windows (path)
     local children = {}
 
@@ -72,6 +72,6 @@ return {
     ls_unix = ls_unix,
     ls_windows = ls_windows,
 
-    ---@type LuaX.CLI.LsDir
+    ---@type fs.LsDir
     ls = ls
 }

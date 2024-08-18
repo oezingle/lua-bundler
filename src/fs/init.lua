@@ -9,6 +9,9 @@ local fs = {
 
     read = require("src.fs.read"),
     write = require("src.fs.write"),
+
+    pwd = require("src.fs.pwd").pwd,
+    is_windows = require("src.fs.is_windows"),
 }
 
 return fs
