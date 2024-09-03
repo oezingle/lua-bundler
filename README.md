@@ -6,11 +6,10 @@ A command-line application to turn lua project directories into portable, self-c
 
 ## Command-line options
 
-
 `lua src/init.lua --help`
 
 ```
-Usage: lua-bundle [-p <publicdir>] [-l <library>] [--uid <uid>]
+Usage: lua-bundler [-i <ignore>] [--uid <uid>]
        [--log-level <log_level>] [-h] <indir> <outdir>
 
 Arguments:
@@ -18,11 +17,8 @@ Arguments:
    outdir
 
 Options:
-            -p <publicdir>,
-   --publicdir <publicdir>
-                         Set the directory to copy LICENSE, README, etc from to outdir
-          -l <library>,  Add a library that is globally available in the target distribution of lua
-   --library <library>
+         -i <ignore>,    Add a library that is globally available in the target distribution of lua
+   --ignore <ignore>
    --uid <uid>           Set the unique identifier of this bundle. Defaults to uuidgen
    --log-level <log_level>
                          Set the program's log level. Default = warn

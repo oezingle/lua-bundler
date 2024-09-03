@@ -16,7 +16,7 @@ local function join(...)
         end
 
         -- Remove starts with ./
-        if item:sub(1, 2) == "." .. sep and not is_first then
+        if item:sub(1, 2) == ("." .. sep) and not is_first then
             item = item:sub(3)
         end
 
@@ -31,7 +31,13 @@ local function join(...)
         end
     end
 
-    return table.concat(ret, sep)
+    local joined = table.concat(ret, sep)
+        -- remove /./
+        :gsub("[/\\].[/\\]", sep)
+        -- remove /<path>/../
+        :gsub("[/\\][^/\\]+[/\\]%.%.[/\\]", sep)
+
+    return joined
 end
 
 return join

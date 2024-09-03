@@ -32,7 +32,22 @@ local function parser_shim()
     ---@field toLua fun(self: self): string
     ---@field serialize fun(self: self, apply: function) TODO not sure how this works
 
-    ---@alias Lua-Parser.Node Lua-Parser.CNode
+    ---@class Lua-Parser.Node.Function : Lua-Parser.CNode
+    ---@field type "function"
+    ---@field func Lua-Parser.Node
+    ---@field args Lua-Parser.Node[]
+
+    ---@class Lua-Parser.Node.String
+    ---@field type "string"
+    ---@field value string
+
+    ---@class Lua-Parser.Node.If
+    ---@field type "if"
+    ---@field cond Lua-Parser.Node
+    ---@field elseifs Lua-Parser.Node[]
+    ---@field elsestmt Lua-Parser.Node
+
+    ---@alias Lua-Parser.Node Lua-Parser.CNode | Lua-Parser.Node.Function | Lua-Parser.Node.String | Lua-Parser.Node.If
 
     ---@type { parse: fun(lua: string): Lua-Parser.Node }
     return require("lib.lua-parser.parser")

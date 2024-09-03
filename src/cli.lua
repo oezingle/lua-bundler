@@ -9,19 +9,31 @@ require("src.seed_random")
 local function cli()
     local parser = ArgParse("lua-bundler")
 
+
     -- parser
     --     :option("-c --config --config-file", "Read from a .lua or .json configuration file")
 
-    -- parser
-    --     :option("-m --map", "Remap a given file - <in> <out>"):count("*"):args(2)
-
-    -- TODO FIXME this shit!
+    -- TODO this option is a bit funky. might remove in future.
     parser
-        :option("-p --publicdir", "Set the directory to copy LICENSE, README, etc from to outdir")
+        :option("-p --publicdir", "[DEPRECATED] Set the directory to copy LICENSE, README, etc from to outdir")
+        :hidden(true)
 
     parser
-        :option("-l --library", "Add a library that is globally available in the target distribution of lua")
+        :option("-l --library", "[DEPRECATED] Add a library that is globally available in the target distribution of lua")
         :count("*")
+        :hidden(true)
+
+    parser
+        :option("-i --ignore", "Add a library that is globally available in the target distribution of lua")
+        :count("*")
+
+    --[[
+    parser
+        :option("-I --include", "Add a library that is stored at another path that you wish to bundle")
+        :count("*")
+        :args(2)
+        :argname({ "path", "modname" })
+    ]]
 
     parser
         :option("--uid", "Set the unique identifier of this bundle. Defaults to uuidgen")
@@ -38,16 +50,33 @@ local function cli()
     log.level = args.log_level or "warn"
 
     local uid = args.uid or uuidgen()
-    local libraries = args.library
+    local ignore = args.ignore
+
+    -- copy from deprecated --library flag
+    if args.publicdir then
+        log.warn("--publicdir option is deprecated")
+    end
+    if #args.library > 0 then
+        log.warn("--library option is deprecated. Use --ignore instead")
+    end
+    for _, lib in ipairs(args.library) do
+        table.insert(ignore, lib)
+    end
+
     local public = args.publicdir
 
     local src = args.indir
     local dest = args.outdir
 
-    -- print(uid)
-    -- print(table.concat(libraries, " "))
-    -- print(public)
-    -- print(src, dest)
+    --[[
+    local include = {}
+    for tuple in pairs(args.include) do
+        local path = tuple[1]
+        local modname = tuple[2]
+
+        table.insert(include, { path = path, modname = modname })
+    end
+]]
 
     local bundler = Bundler({
         src = src,
@@ -55,7 +84,9 @@ local function cli()
 
         uid = uid,
 
-        libraries = libraries,
+        ignore = ignore,
+        -- include = include,
+
         public = public,
     })
 

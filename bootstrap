@@ -1,15 +1,23 @@
 #!/bin/sh
 
-rm -r build build2
 
-set -e
+function main {
+    # https://stackoverflow.com/questions/3349105/how-can-i-set-the-current-working-directory-to-the-directory-of-the-script-in-ba
+    cd "$(dirname "$0")"
 
-# Run original bundler
-lua src/init.lua src build --log-level=error -l parser -l ext -l table
-# Check that the bundled bundler can bundle
-lua build/init.lua src build2 --log-level=error -l parser -l ext -l table
+    rm -r build/stage-1 build/stage-2
 
-# Check that the bundled bundler built by the bundled bundler runs within its own directory.
-cd build2; lua init.lua --help > /dev/null
+    set -e
 
-echo "ok"
+    # Run original bundler
+    lua src/init.lua src build/stage-1 --log-level=error -i parser -i ext -i table
+    # Check that the bundled bundler can bundle
+    lua build/stage-1/init.lua src build/stage-2 --log-level=error -i parser -i ext -i table
+
+    # Check that the bundled bundler built by the bundled bundler runs within its own directory.
+    cd build/stage-2; lua init.lua --help > /dev/null
+
+    echo "lua-bundler bootstrap ok"
+}
+
+main

@@ -1,13 +1,12 @@
-local escape = require("src.polyfill.string.escape")
 
 local function is_lua_file(path)
     local extensions = {
-        ".lua",
+        "%.lua",
         -- ".luax"
     }
 
     for _, extension in ipairs(extensions) do
-        if path:match(escape(extension) .. "$") then
+        if path:match(extension .. "$") then
             return true
         end
     end
