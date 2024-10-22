@@ -1,17 +1,20 @@
-local class           = require("lib.30log")
-local parser          = require("lib.lua-parser")
-local log             = require("lib.log")
+local class                 = require("lib.30log")
+local LuaParser             = require("lib.lua-parser")
+local string                = require("lib.lua-ext.string")
+local log                   = require("lib.log")
+local LuaParserWithComments = require("src.parser.LuaParserWithComments")
 
-local fs              = require("src.fs.init")
+local fs                    = require("src.fs.init")
 
-local join            = require("src.polyfill.path.join")
-local basename        = require("src.polyfill.path.basename")
-local includes        = require("src.polyfill.list.includes")
+local join                  = require("src.polyfill.path.join")
+local basename              = require("src.polyfill.path.basename")
+local includes              = require("src.polyfill.list.includes")
 
-local is_lua_file     = require("src.is_lua_file")
-local lazy_minify     = require("src.lazy_minify")
+local is_lua_file           = require("src.is_lua_file")
+local lazy_minify           = require("src.lazy_minify")
 
-local luaify          = require("src.resolve.luaify")
+local luaify                = require("src.resolve.luaify")
+
 
 local DEP_FOLDER_NAME = "_dep"
 
@@ -22,6 +25,7 @@ local DEP_FOLDER_NAME = "_dep"
 ---@field ignore string[]?
 -- ---@field include { path: string, modname: string }[]
 ---@field ["public"] string?
+---@field preserve "comments"|"annotations"|nil
 
 ---@class LuaBundle.Bundler : Log.BaseFunctions, LuaBundle.Bundler.Options
 ---@field paths { src: string, dest: string, lua_src: string, public: string? }
@@ -71,6 +75,8 @@ function Bundler:init(options)
     self.uid = options.uid
 
     self.paths.public = options.public
+
+    self.preserve = options.preserve
 
     -- self.include = options.include
 
@@ -163,8 +169,7 @@ end
 ---@param filepath string
 ---@return boolean matched, boolean needs_shim
 function Bundler:match_replaced_function(statement, filepath)
-    if includes({"var", "index" }, statement.func.type) and includes(check_functions, tostring(statement.func)) then
-
+    if includes({ "var", "index" }, statement.func.type) and includes(check_functions, tostring(statement.func)) then
         local first_arg = statement.args[1]
 
         -- non-string results are dynamic requires
@@ -236,7 +241,7 @@ function Bundler:recurse_ast(statement, filepath)
         local shim_cond = self:recurse_ast(statement.cond, filepath)
 
         local shim_elseifs = self:recurse_ast_list(statement.elseifs, filepath)
-        
+
         local shim_else = self:recurse_ast(statement.elsestmt, filepath)
 
         return shim_if or shim_cond or shim_elseifs or shim_else
@@ -252,13 +257,15 @@ function Bundler:modify_source_file(relative_path)
 
     local contents = fs.read(absolute_in)
 
-    local ast = parser.parse(contents)
+    local force_no_shim = contents:match(string.patescape("---@lua-bundler:no-shim"))
+
+    local ast = self:parse(contents, absolute_in, false)
 
     local needs_shim = self:recurse_ast_list(ast, absolute_in)
 
-    local contents = tostring(ast)
+    local contents_mod = tostring(ast)
 
-    if needs_shim then
+    if needs_shim and not force_no_shim then
         log.info(string.format("[src] Installing shim in %q", absolute_out))
 
         local relative_path = basename(relative_path):gsub("[/\\]", ".")
@@ -266,14 +273,14 @@ function Bundler:modify_source_file(relative_path)
             relative_path = relative_path .. "."
         end
 
-        contents = self:get_module_header({
+        contents_mod = self:get_module_header({
             OUTDIR_END = basename(absolute_out):match("[/\\]([^/\\]+)$") or "",
             RELATIVE_PATH = relative_path
-        }) .. "\n" .. contents
+        }) .. "\n" .. contents_mod
     end
 
     log.debug(string.format("[src] Writing to %s", absolute_out))
-    fs.write(absolute_out, contents)
+    fs.write(absolute_out, contents_mod)
 end
 
 ---@param path string
@@ -321,6 +328,32 @@ function Bundler:add_shim()
     fs.write(path, contents)
 end
 
+---@param code string
+---@param source string
+---@param is_dep boolean
+function Bundler:parse(code, source, is_dep)
+    local ok, ret = pcall(function()
+        if self.preserve and not is_dep then
+            return LuaParserWithComments.parse(code, nil, nil, nil, self.preserve == "annotations")
+        end
+
+        return LuaParser.parse(code)
+    end)
+
+    if not ok then
+        local err = ret
+
+        local path = join(fs.pwd(), source)
+
+        -- TODO get line number
+        print(string.format("\n> In %s:%s", path, "?"))
+
+        error(err)
+    end
+
+    return ret
+end
+
 ---@param luapath string
 ---@param reqpath string
 function Bundler:handle_dependency(luapath, reqpath)
@@ -343,7 +376,7 @@ function Bundler:handle_dependency(luapath, reqpath)
 
     local contents = fs.read(path)
 
-    local ast = parser.parse(contents)
+    local ast = self:parse(contents, path, true)
 
     log.trace(string.format("Checking AST of %q", path))
 

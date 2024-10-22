@@ -9,8 +9,8 @@ A command-line application to turn lua project directories into portable, self-c
 `lua src/init.lua --help`
 
 ```
-Usage: lua-bundler [-i <ignore>] [--uid <uid>]
-       [--log-level <log_level>] [-h] <indir> <outdir>
+Usage: lua-bundler [-i <ignore>] [--preserve <comments|annotations>]
+       [--uid <uid>] [--log-level <log_level>] [-h] <indir> <outdir>
 
 Arguments:
    indir
@@ -19,6 +19,8 @@ Arguments:
 Options:
          -i <ignore>,    Add a library that is globally available in the target distribution of lua
    --ignore <ignore>
+   --preserve <comments|annotations>
+                         Preserve lua-language-server annotations or all comments
    --uid <uid>           Set the unique identifier of this bundle. Defaults to uuidgen
    --log-level <log_level>
                          Set the program's log level. Default = warn

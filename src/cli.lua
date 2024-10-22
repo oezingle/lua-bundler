@@ -27,6 +27,11 @@ local function cli()
         :option("-i --ignore", "Add a library that is globally available in the target distribution of lua")
         :count("*")
 
+    parser
+        :option("--preserve", "Preserve lua-language-server annotations or all comments")
+        :argname("<comments|annotations>")
+        -- :choices({"comments", "annotations"})
+
     --[[
     parser
         :option("-I --include", "Add a library that is stored at another path that you wish to bundle")
@@ -64,9 +69,18 @@ local function cli()
     end
 
     local public = args.publicdir
+    
+    local preserve = args.preserve
+
+    if preserve and preserve ~= "comments" and preserve ~= "annotations" then
+        print("Error: expected preserve to be either \"comments\" or \"annotations\"")
+
+        os.exit(1)
+    end
 
     local src = args.indir
     local dest = args.outdir
+
 
     --[[
     local include = {}
@@ -86,6 +100,7 @@ local function cli()
 
         ignore = ignore,
         -- include = include,
+        preserve = preserve,
 
         public = public,
     })

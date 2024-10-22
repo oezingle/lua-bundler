@@ -24,6 +24,19 @@ local function parser_shim()
     ---@alias Lua-Parser.Location { col: integer, line: integer }
     ---@alias Lua-Parser.Span { from: Lua-Parser.Location, to: Lua-Parser.Location }
 
+    ---@class Lua-Parser.Parser 
+    ---@field getloc fun(self: self): Lua-Parser.Location
+    ---@field node fun(self: self, type: string, ...: any): Lua-Parser.CNode
+    ---@field version string
+    ---@field lasttoken string
+    ---@field canbe fun(self: self, token: string?, tokentype: string): (string, string) | nil Optionally catch a token by its type
+    ---@field mustbe fun(self: self, token: string?, tokentype: string): (string, string) Like canbe, but expect this token
+    
+    ---@class Lua-Parser.LuaParser : Lua-Parser.Parser
+    ---@field super Lua-Parser.Parser
+    ---@field parse_stat fun (self: self): Lua-Parser.CNode? Parse the next statement made available
+    ---@field init fun(self: self, data: string, version: string?, source: string?, useluajit: boolean?): self Initialize a member of this class
+    ---@field useluajit boolean automatically set if not chosen
 
     ---@class Lua-Parser.CNode
     ---@field span Lua-Parser.Span
@@ -31,6 +44,8 @@ local function parser_shim()
     ---@field flatten fun(self:self, func: function, varmap: any) TODO Not sure how this works whatsoever
     ---@field toLua fun(self: self): string
     ---@field serialize fun(self: self, apply: function) TODO not sure how this works
+    ---@field setspan fun(self: self, span: Lua-Parser.Span): self
+    ---@operator call:Lua-Parser.CNode
 
     ---@class Lua-Parser.Node.Function : Lua-Parser.CNode
     ---@field type "function"
